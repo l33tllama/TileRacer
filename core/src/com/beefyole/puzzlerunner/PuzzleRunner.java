@@ -23,14 +23,13 @@ public class PuzzleRunner extends ApplicationAdapter {
 		config.setWidescreenResolution(1280, 720);
 		currentStage = new GameScene();
 		Gdx.input.setInputProcessor(currentStage);
-		
 	}
 
 	@Override
 	public void render () {
+		currentStage.act(Gdx.graphics.getDeltaTime());
 		Gdx.gl.glClearColor(0.0f, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		currentStage.act(Gdx.graphics.getDeltaTime());
 		currentStage.draw();
 		//batch.begin();
 		//batch.draw(img, 0, 0);

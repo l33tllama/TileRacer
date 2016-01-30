@@ -43,7 +43,7 @@ public class TilePieceActor extends Actor{
 		//setPosition(world.getPos().x + getX(), world.getPos().y + getY());
 		addListener(new InputListener(){
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				System.out.println("down");
+				//System.out.println("down");
 				setPosition(- width / 2, - height/2); 
 				//setPosition(x - width / 2, Gdx.graphics.getHeight() - y - height/2); 
 				clickedDown = true;
@@ -51,7 +51,7 @@ public class TilePieceActor extends Actor{
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
 				clickedDown = false;
-		        System.out.println("up");
+		        //System.out.println("up");
 		    }
 		});
 	}

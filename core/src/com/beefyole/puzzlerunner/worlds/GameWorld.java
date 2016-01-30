@@ -14,7 +14,7 @@ public class GameWorld extends Group implements World {
 	private Vector2 pos;
 	private float vel = 1.0f;
 	private static float MAX_VELOCITY = 10f;
-	private float accel = 0.001f;
+	private float accel = 0.05f;
 	Array<TilePiece> selectablePieces;
 	
 	public GameWorld(int x, int y, int height, int width){
