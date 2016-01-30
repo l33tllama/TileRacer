@@ -24,12 +24,11 @@ public class PuzzleRunner extends ApplicationAdapter {
 		currentStage = new GameScene();
 		Gdx.input.setInputProcessor(currentStage);
 		
-		
 	}
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0.1f, 0, 0, 1);
+		Gdx.gl.glClearColor(0.0f, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		currentStage.act(Gdx.graphics.getDeltaTime());
 		currentStage.draw();

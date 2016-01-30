@@ -25,8 +25,11 @@ public class Player extends Actor{
 		height = tex.getHeight();
 		region = new TextureRegion(tex);
 		setBounds(STARTX, STARTY, width, height);
+		setOrigin(width / 2, height / 2);
 		rotateBy(90.0f);
-		scaleBy(-0.3f);
+		setWidth(80);
+		setHeight(80);
+		//scaleBy(-0.3f);
 		//region = new TextureRegion();
 		setPosition(startPos.x, startPos.y);
 		this.world = world;
@@ -35,13 +38,18 @@ public class Player extends Actor{
 	@Override
 	public void act(float dt){
 		// logic goes here..
+		/*setPosition(getX() - world.getPos().x, getY() - world.getPos().y);
+		float oldPosX = getX();
+		float oldPosY = getY();
+		setPosition(world.getPos().x + oldPosX, world.getPos().y + oldPosY);*/
+		
 	}
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		batch.draw(region, getX() + world.getPos().x, world.getPos().y + getY(), 
+		batch.draw(region, getX(), getY(), 
 				getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), 
 				getScaleY(), getRotation());
 	}

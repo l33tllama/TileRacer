@@ -2,22 +2,28 @@ package com.beefyole.puzzlerunner.worlds;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.beefyole.puzzlerunner.TilePiece;
 import com.beefyole.puzzlerunner.World;
 import com.beefyole.puzzlerunner.actors.TilePieceActor;
 
-public class GameWorld implements World{
+public class GameWorld extends Group implements World {
 	
 	private Vector2 pos;
 	private float vel = 1.0f;
-	private float accel = 0.01f;
+	private static float MAX_VELOCITY = 10f;
+	private float accel = 0.001f;
 	Array<TilePiece> selectablePieces;
 	
-	public GameWorld(){
-		this.pos = new Vector2(0f, 0f);
+	public GameWorld(int x, int y, int height, int width){
+		setPosition(x, y);
+		setWidth(width);
+		setHeight(height);
+		pos = new Vector2(getX(), getY());
 		selectablePieces = new Array<TilePiece>(6);
-
+		
 	}
 	
 	public TilePieceActor addTilePiece(Texture tex){
@@ -37,8 +43,12 @@ public class GameWorld implements World{
 	public void update(float dt){
 		
 		// update world position
-		vel += accel;
-		pos.y -= vel * dt;
+		if(vel < MAX_VELOCITY){
+			vel += accel;
+		}
+		
+		//pos.y -= vel * dt;
+		setY(getY() - vel * dt);
 	}
 
 	@Override
