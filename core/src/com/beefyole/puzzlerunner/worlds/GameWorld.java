@@ -2,6 +2,7 @@ package com.beefyole.puzzlerunner.worlds;
 
 import com.badlogic.gdx.math.Vector2;
 import com.beefyole.puzzlerunner.World;
+import com.beefyole.puzzlerunner.actors.TilePieceActor;
 
 public class GameWorld implements World{
 	
@@ -10,11 +11,11 @@ public class GameWorld implements World{
 	private float accel = 0.01f;
 	
 	public GameWorld(){
-		pos = new Vector2(0f, 0f);
+		this.pos = new Vector2(0f, 0f);
 	}
 	
-	public void generatePieces(){
-		
+	public TilePieceActor addTilePiece(){
+		return null;
 	}
 	
 	@Override
@@ -25,12 +26,20 @@ public class GameWorld implements World{
 		pos.y -= vel * dt;
 	}
 
+	@Override
 	public Vector2 getPos() {
 		return pos;
 	}
-
+	
+	@Override
 	public void setPos(Vector2 pos) {
 		this.pos = pos;
+	}
+
+	@Override
+	public void generate() {
+		
+		
 	}
 
 }
