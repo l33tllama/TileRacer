@@ -11,25 +11,47 @@ import com.beefyole.puzzlerunner.TextureRegionHelper;
 
 public class TilePieceActor extends Actor{
 	
+	private final int STARTX = 0;
+	private final int STARTY = 0;
 	InputListener inputListener;
 	TextureRegion region;
 	World world;
 	TextureRegionHelper regionHelper;
+	int rows = 9;
+	int cols = 9;
+	int width = 64;
+	int	height = 64;
 	
-			
-	public TilePieceActor(World world, Texture tex, int rows, int cols){
+	boolean addedToWorld = false;
+					
+	public TilePieceActor(World world, Texture tex, int regionID, int startX, int startY){
 		this.world = world;
-		regionHelper = new TextureRegionHelper(tex, tex.getWidth(), 
-				tex.getHeight(), rows, cols);
+
+		setBounds(STARTX, STARTY, width, height);
+		regionHelper = new TextureRegionHelper(tex, width, height, rows, cols);
+		region = regionHelper.getRegionAt(regionID);
+		setPosition(startX, startY);
+	}
+	
+	@Override 
+	public void act(float dt){
+		
 	}
 	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		Color color = getColor();
 		batch.setColor(color.r, color.g, color.b, color.a * parentAlpha);
-		batch.draw(region, getX() + world.getPos().x, world.getPos().y + getY(), 
-				getOriginX(), getOriginY(), getWidth(), getHeight(), getScaleX(), 
-				getScaleY(), getRotation());
+		if(addedToWorld){
+			batch.draw(region, world.getPos().x + getX(),world.getPos().y + getY(), 
+					getOriginX(), getOriginY(), width, height, getScaleX(), 
+					getScaleY(), getRotation());
+		} else {
+			batch.draw(region, world.getPos().x + getX(), getY(), 
+					getOriginX(), getOriginY(), width, height, getScaleX(), 
+					getScaleY(), getRotation());
+		}
+		
 	}
 
 }

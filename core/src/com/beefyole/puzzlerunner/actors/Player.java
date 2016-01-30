@@ -13,8 +13,6 @@ public class Player extends Actor{
 	
 	private final int STARTX = 0;
 	private final int STARTY = 0;
-	//private final int WIDTH = 128;
-	//private final int HEIGHT = 128;
 	private int width, height;
 	
 	Texture tex;
@@ -28,7 +26,7 @@ public class Player extends Actor{
 		region = new TextureRegion(tex);
 		setBounds(STARTX, STARTY, width, height);
 		rotateBy(90.0f);
-		scaleBy(0.25f);
+		scaleBy(-0.3f);
 		//region = new TextureRegion();
 		setPosition(startPos.x, startPos.y);
 		this.world = world;

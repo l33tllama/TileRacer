@@ -20,9 +20,9 @@ public class TextureRegionHelper {
 	}
 			
 	public TextureRegion getRegionAt(int index){
-		int xPos = index % cols + index * width;
-		int yPos = index / rows + index * height;
-		return new TextureRegion(tex, xPos, yPos);
+		int xPos = (index % cols)  * width;
+		int yPos = (index / rows) * height;
+		return new TextureRegion(tex, xPos, yPos, width, height);
 		
 	}
 }

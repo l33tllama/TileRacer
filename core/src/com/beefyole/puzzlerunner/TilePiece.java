@@ -13,6 +13,57 @@ public class TilePiece {
 		this.has_right = has_right;
 	}
 	
+	public static int getTileIndex(boolean up, boolean down, boolean left, boolean right){
+		if(!up && !down && !left && right){	// 0 0 0 1 - 1
+			return 5;
+		}
+		if(!up && !down && left && !right){	// 0 0 1 0 - 2
+			return 13;
+		}
+		if(!up && !down && left && right){	// 0 0 1 1 - 3
+			return 31;
+		}
+		if(!up && down && !left && !right){	// 0 1 0 0 - 4
+			return 19;
+		}
+		if(!up && down && !left && right){	// 0 1 0 1 - 5
+			return 0;
+		}
+		if(!up && down && left && !right){	// 0 1 1 0 - 6
+			return 11;
+		}
+		if(!up && down && left && right){	// 0 1 1 1 - 7 
+			return 1;
+		}
+		if(up && !down && !left && !right){	// 1 0 0 0 - 8
+			return 27;
+		}
+		if(up && !down && !left && right){	// 1 0 0 1 - 9
+			return 15; 
+		}
+		if(up && !down && left && !right){	// 1 0 1 0 - 10
+			return 7;
+		}
+		if(up && !down && left && right){	// 1 0 1 1 - 11
+			return 16;
+		}
+		if(up && down && !left && !right){	// 1 1 0 0 - 12
+			return 6;
+		}
+		if(up && down && !left && right){	// 1 1 0 1 - 13
+			return 14;
+		}
+		if(up && down && left && !right){	// 1 1 1 0 - 14
+			return 22;
+		}
+		if(up && down && left && right){	// 1 1 1 1 - 15
+			return 23;
+		}
+		
+		return 33;
+	}
+	
+	/* Un-needed?
 	public boolean hasUp(){
 		return has_up;
 	}
@@ -27,7 +78,7 @@ public class TilePiece {
 	
 	public boolean hasRight(){
 		return has_right;
-	}
+	} */
 	
 	boolean testConnectUp(){
 		return has_up && !up_connected;
