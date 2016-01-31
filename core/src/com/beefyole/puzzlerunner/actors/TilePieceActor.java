@@ -1,7 +1,5 @@
 package com.beefyole.puzzlerunner.actors;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -12,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.beefyole.puzzlerunner.World;
 import com.beefyole.puzzlerunner.GameConfig;
 import com.beefyole.puzzlerunner.TextureRegionHelper;
+import com.beefyole.puzzlerunner.TilePiece;
+import com.beefyole.puzzlerunner.TilePiece.PieceName;
 
 public class TilePieceActor extends Actor{
 	
@@ -27,6 +27,9 @@ public class TilePieceActor extends Actor{
 	int	height = 64;
 	int draw_width = 81;
 	int draw_height = 81;
+	int regionID;
+	PieceName name;	
+	TilePiece tile;
 	
 	boolean addedToWorld = false;
 	boolean clickedDown = false;
@@ -34,6 +37,7 @@ public class TilePieceActor extends Actor{
 					
 	public TilePieceActor(World world, Texture tex, int regionID, int startX, int startY){
 		this.world = world;
+		this.regionID = regionID;
 		config = new GameConfig();
 
 		setBounds(STARTX, STARTY, draw_width, draw_height);
@@ -43,14 +47,14 @@ public class TilePieceActor extends Actor{
 		//setPosition(world.getPos().x + getX(), world.getPos().y + getY());
 		addListener(new InputListener(){
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-				//System.out.println("down");
-				setPosition(- width / 2, - height/2); 
+				System.out.println("down");
+				//setPosition(- width / 2, - height/2); 
 				//setPosition(x - width / 2, Gdx.graphics.getHeight() - y - height/2); 
 				clickedDown = true;
 				return true;
 			}
 			public void touchUp (InputEvent event, float x, float y, int pointer, int button) {
-				clickedDown = false;
+				//clickedDown = false;
 		        //System.out.println("up");
 		    }
 		});
@@ -58,14 +62,37 @@ public class TilePieceActor extends Actor{
 	
 	@Override 
 	public void act(float dt){
-		if(clickedDown){
+		/*if(clickedDown){
 			setPosition(Gdx.input.getX() - width / 2, 
 					Gdx.graphics.getHeight() - Gdx.input.getY() - height / 2);
-		} 
+		} */
+	}
+	public TilePiece getTile() {
+		return tile;
+	}
+
+	public void setTile(TilePiece tile) {
+		this.tile = tile;
+	}
+	
+	public void setPieceName(PieceName name){
+		this.name = name;
+	}
+	
+	public PieceName getPieceName(){
+		return this.name;
 	}
 	
 	public boolean isClicked(){
 		return clickedDown;
+	}
+	
+	public void setUnclicked(){
+		clickedDown = false;
+	}
+	
+	public int getRegionID(){
+		return regionID;
 	}
 	
 	@Override

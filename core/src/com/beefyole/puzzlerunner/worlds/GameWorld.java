@@ -2,7 +2,6 @@ package com.beefyole.puzzlerunner.worlds;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.beefyole.puzzlerunner.TilePiece;
@@ -10,33 +9,37 @@ import com.beefyole.puzzlerunner.World;
 import com.beefyole.puzzlerunner.actors.TilePieceActor;
 
 public class GameWorld extends Group implements World {
-	
+			
 	private Vector2 pos;
 	private float vel = 1.0f;
 	private static float MAX_VELOCITY = 10f;
-	private float accel = 0.05f;
-	Array<TilePiece> selectablePieces;
+	private float accel = 0.009f;
+	
+	
+	//TilePiece topPiece;
 	
 	public GameWorld(int x, int y, int height, int width){
 		setPosition(x, y);
 		setWidth(width);
 		setHeight(height);
 		pos = new Vector2(getX(), getY());
-		selectablePieces = new Array<TilePiece>(6);
 		
 	}
 	
-	public TilePieceActor addTilePiece(Texture tex){
-		boolean udlr[] = new boolean[4];
-		for(int i = 0; i < 4; i++){
-			double r = Math.random();
-			udlr[i] = r > 0.5? true : false;
-		}
-		
-		selectablePieces.add(new TilePiece(udlr[0], udlr[1], udlr[2], udlr[3]));
-		int regionID = TilePiece.getTileIndex(udlr[0], udlr[1], udlr[2], udlr[3]);
-		System.out.print("Creating tile piece at index: " + regionID);
+	public TilePieceActor createFromTile(Texture tex, TilePiece t){
+		int regionID = TilePiece.getTileIndex(t.hasUp(), t.hasDown(), t.hasLeft(), t.hasRight());
 		return new TilePieceActor(this, tex, regionID, 0, 0);
+	}
+		
+	public Array<TilePiece> getExitPieces(){
+		Array<TilePiece> list = new Array<TilePiece>(20);
+		Array<TilePiece> out = TilePiece.getExitPieces(TilePiece.getStartPiece(), list);
+		TilePiece.unMarkAllSides();
+		return out;
+	}
+	
+	public void addTileToWorld(TilePieceActor tpa){
+		addActor(tpa);
 	}
 	
 	@Override
@@ -48,7 +51,7 @@ public class GameWorld extends Group implements World {
 		}
 		
 		//pos.y -= vel * dt;
-		setY(getY() - vel * dt);
+		//setY(getY() - vel * dt);
 	}
 
 	@Override
