@@ -235,6 +235,10 @@ public class GameScene extends Stage {
 		if(Gdx.input.isKeyJustPressed(Keys.RIGHT)){
 			activeTileIndex = (activeTileIndex + 1) % (currentTiles);
 		}
+		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
+			System.out.println("Goodbye");
+			Gdx.app.exit();
+		}
 		
 		// display tiles that could be added onscreen
 		showTileOptions();
