@@ -18,11 +18,14 @@ public class TileGrid{
 		this.startTile = startTile;
 		
 		tiles = new Tile[width][height];
-		
-		Tile emptyTile = new Tile(false, false, false, false);
-		
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+				tiles[x][y] = new Tile(false, false, false, false, x, y);
+			}
+		}		
 	}
 	
+	// Get an array of tiles with exits that are unconnected. Useful for finding new places to put pieces.
 	public Array<Tile> findUnconnectedTiles(){
 		Array<Tile> unconnectedTiles = new Array<Tile>(width * height);
 		
@@ -46,6 +49,7 @@ public class TileGrid{
 		return unconnectedTiles;
 	}
 	
+	// Once found open tiles, iterate over them and look at where exactly the open sides are using this function 
 	public Array<Directions> getOpenDirections(Tile t){
 		
 		Array<Directions> dirs = new Array<Directions>(4);
@@ -69,39 +73,51 @@ public class TileGrid{
 		
 	}
 	
+	// Once found a new direction of a tile piece to add a new tile piece to, connect it!
 	public boolean addTile(Tile existing_tile, Tile new_tile, Directions dir){
 		switch(dir){
 		case DOWN:
-			break;
+			return existing_tile.connectDown(new_tile);
 		case LEFT:
-			break;
+			return existing_tile.connectLeft(new_tile);
 		case NONE:
-			break;
+			return false;
 		case RIGHT:
-			break;
+			return existing_tile.connectRight(new_tile);
 		case UP:
 			return existing_tile.connectUp(new_tile);
-			break;
 		default:
-			break;
-		
+			return false;
 		}
-		
-			
-		return false;
 	}
 	
+	// Find a path for the robot to follow, if the height has increased
 	public Array<Tile> findPath(Tile start, int highestPt, Directions from, Array<Tile> pathSoFar){
 		if(start.isConnectedLeft() && from != Directions.RIGHT){
 			pathSoFar.add(start.getLeft());
-			// if start == height, return path..
 			findPath(start.getLeft(), highestPt, Directions.RIGHT, pathSoFar);
 		}
 		if(start.isConnectedRight() && from != Directions.LEFT){
+			pathSoFar.add(start.getRight());
 			findPath(start.getRight(), highestPt, Directions.LEFT, pathSoFar);
 		}
+		if(start.isConnectedDown() && from != Directions.UP){
+			pathSoFar.add(start.getDown());
+			findPath(start.getDown(), highestPt, Directions.DOWN, pathSoFar);
+		}
+		if(start.isConnectedUp() && from != Directions.DOWN){
+			if(start.getUp().getHeight() > highestPt){
+				pathSoFar.add(start.getUp());
+				return pathSoFar;
+			}
+			findPath(start.getUp(), highestPt, Directions.UP, pathSoFar);
+		}
+		
+		return pathSoFar;
 	}
 	
+	// ?? 
+	/*
 	public void findHighestPath(Tile start, int highest){
 		
 		Array<Tile> connectedTiles = new Array<Tile>(4);
@@ -114,8 +130,8 @@ public class TileGrid{
 		}
 		
 		for(Tile t : connectedTiles){
-			findHighestPath(t)
+			findHighestPath(t);
 		}
-	}
+	} */
 
 }
