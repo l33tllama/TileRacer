@@ -1,12 +1,18 @@
-package com.beefyole.puzzlerunner;
+package com.beefyole.puzzlerunner.worlds;
 
-public class Tile {
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+
+public class Tile extends Actor{
 	
 	private boolean has_up, has_down, has_left, has_right;
 	private boolean up_connected, down_connected, left_connected, right_connected;
 	private Tile up_t, down_t, left_t, right_t;
 	private boolean is_empty = false;
 	private int yPos, xPos;
+	private Texture tex;
+	private TextureRegion region;
 	
 	public Tile(boolean has_up, boolean has_down, boolean has_left, boolean has_right, int xPos, int yPos){
 		this.has_up = has_up;
@@ -21,12 +27,16 @@ public class Tile {
 		}
 	}
 	
+	public void createTexture(Texture tex){
+		this.tex = tex;
+	}
+	
 	// Get x and y positions
-	public int getHeight(){
+	public int getGridY(){
 		return yPos;
 	}
 	// might not need this..?
-	public int getX(){
+	public int getGridX(){
 		return xPos;
 	}
 	
@@ -92,29 +102,29 @@ public class Tile {
 	}
 	
 	// get the surrounding tiles. If empty, create empty tile
-	public Tile getUp(){
+	public Tile getUpTile(){
 		if(has_up && up_connected){
 			return up_t;
 		}
-		return new Tile(false, false, false, false, getX(), getHeight() + 1);
+		return new Tile(false, false, false, false, getGridX(), getGridY() + 1);
 	}
-	public Tile getDown(){
+	public Tile getDownTile(){
 		if(has_down && down_connected){
 			return up_t;
 		}
-		return new Tile(false, false, false, false, getX(), getHeight() - 1);
+		return new Tile(false, false, false, false, getGridX(), getGridY() - 1);
 	}
-	public Tile getLeft(){
+	public Tile getLeftTile(){
 		if(has_left && left_connected){
 			return up_t;
 		}
-		return new Tile(false, false, false, false, getX() - 1, getHeight());
+		return new Tile(false, false, false, false, getGridX() - 1, getGridY());
 	}
-	public Tile getRight(){
+	public Tile getRightTile(){
 		if(has_right && right_connected){
 			return up_t;
 		}
-		return new Tile(false, false, false, false, getX() + 1, getHeight());
+		return new Tile(false, false, false, false, getGridX() + 1, getGridY());
 	}
 	
 	// Connect the tiles. Two way.
@@ -178,5 +188,57 @@ public class Tile {
 		} else {
 			return false;
 		}
+	}
+	public static int getTileIndex(boolean up, boolean down, boolean left, boolean right){
+		if(!up && !down && !left && right){	// 0 0 0 1 - 1
+			return 5;
+		}
+		if(!up && !down && left && !right){	// 0 0 1 0 - 2
+			return 13;
+		}
+		if(!up && !down && left && right){	// 0 0 1 1 - 3
+			return 31;
+		}
+		if(!up && down && !left && !right){	// 0 1 0 0 - 4
+			return 19;
+		}
+		if(!up && down && !left && right){	// 0 1 0 1 - 5
+			return 0;
+		}
+		if(!up && down && left && !right){	// 0 1 1 0 - 6
+			return 20;
+		}
+		if(!up && down && left && right){	// 0 1 1 1 - 7 
+			return 1;
+		}
+		if(up && !down && !left && !right){	// 1 0 0 0 - 8
+			return 27;
+		}
+		if(up && !down && !left && right){	// 1 0 0 1 - 9
+			return 15; 
+		}
+		if(up && !down && left && !right){	// 1 0 1 0 - 10
+			return 7;
+		}
+		if(up && !down && left && right){	// 1 0 1 1 - 11
+			return 16;
+		}
+		if(up && down && !left && !right){	// 1 1 0 0 - 12
+			return 6;
+		}
+		if(up && down && !left && right){	// 1 1 0 1 - 13
+			return 14;
+		}
+		if(up && down && left && !right){	// 1 1 1 0 - 14
+			return 22;
+		}
+		if(up && down && left && right){	// 1 1 1 1 - 15
+			return 23;
+		}
+		
+		return 33;
+	}
+	public void dispose(){
+		tex.dispose();
 	}
 }

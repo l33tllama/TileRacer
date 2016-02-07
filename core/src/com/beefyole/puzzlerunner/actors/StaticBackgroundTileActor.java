@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.beefyole.puzzlerunner.TextureRegionHelper;
 
-public class WorldBackgroundTile extends Actor {
+public class StaticBackgroundTileActor extends Actor {
 	
 	Texture tex;
 	TextureRegion region;
@@ -20,7 +20,7 @@ public class WorldBackgroundTile extends Actor {
 	int draw_width = 81;
 	int draw_height = 81;
 	
-	public WorldBackgroundTile(Texture tex){
+	public StaticBackgroundTileActor(Texture tex){
 		//this.tex = tex;
 		tex = new Texture(Gdx.files.internal("sprites/RPGpack_sheet.png"));
 		regionHelper = new TextureRegionHelper(tex, width, height, rows, cols);

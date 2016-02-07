@@ -1,5 +1,6 @@
-package com.beefyole.puzzlerunner;
+package com.beefyole.puzzlerunner.worlds;
 
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 
 public class TileGrid{
@@ -9,20 +10,44 @@ public class TileGrid{
 	private int width;
 	private int height;
 	private Tile startTile;
+	private int tileCount;
 	
 	public enum Directions { LEFT, RIGHT, UP, DOWN, NONE};
 	
-	public TileGrid(int width, int screenHeight, Tile startTile){
+	public TileGrid(int width, int height){
 		this.width = width;
-		this.height = screenHeight;
-		this.startTile = startTile;
+		this.height = height;
 		
-		tiles = new Tile[width][height];
-		for(int x = 0; x < width; x++){
+		tiles = new Tile[width][height * 2];
+		tileCount = width * height;
+		System.out.println("Creating tilegrid..");
+		for (int x = 0; x < width; x++) {
 			for(int y = 0; y < height; y++){
+				System.out.println("Adding a tile class..");
 				tiles[x][y] = new Tile(false, false, false, false, x, y);
 			}
-		}		
+		}
+	}
+	
+	public void createFirstTile(){
+		this.startTile = new Tile(true, false, false, false, 2, 0);
+	}
+	
+	public void insertTleleAt(Tile t, int x, int y){
+		if(x >= 0 && x <= width && y >= 0 && y <= height){
+			tiles[x][y] = t;
+		}
+	}
+	
+	public void createNewSetAbove(){
+		// if first set of tiles only
+		if(tileCount == width * height){
+			
+		}
+		// if at least one new set of tiles has been generated - delete first set and move tiles down for new tiles
+		else {
+			
+		}
 	}
 	
 	// Get an array of tiles with exits that are unconnected. Useful for finding new places to put pieces.
@@ -94,26 +119,33 @@ public class TileGrid{
 	// Find a path for the robot to follow, if the height has increased
 	public Array<Tile> findPath(Tile start, int highestPt, Directions from, Array<Tile> pathSoFar){
 		if(start.isConnectedLeft() && from != Directions.RIGHT){
-			pathSoFar.add(start.getLeft());
-			findPath(start.getLeft(), highestPt, Directions.RIGHT, pathSoFar);
+			pathSoFar.add(start.getLeftTile());
+			findPath(start.getLeftTile(), highestPt, Directions.RIGHT, pathSoFar);
 		}
 		if(start.isConnectedRight() && from != Directions.LEFT){
-			pathSoFar.add(start.getRight());
-			findPath(start.getRight(), highestPt, Directions.LEFT, pathSoFar);
+			pathSoFar.add(start.getRightTile());
+			findPath(start.getRightTile(), highestPt, Directions.LEFT, pathSoFar);
 		}
 		if(start.isConnectedDown() && from != Directions.UP){
-			pathSoFar.add(start.getDown());
-			findPath(start.getDown(), highestPt, Directions.DOWN, pathSoFar);
+			pathSoFar.add(start.getDownTile());
+			findPath(start.getDownTile(), highestPt, Directions.DOWN, pathSoFar);
 		}
 		if(start.isConnectedUp() && from != Directions.DOWN){
-			if(start.getUp().getHeight() > highestPt){
-				pathSoFar.add(start.getUp());
+			if(start.getUpTile().getGridY() > highestPt){
+				pathSoFar.add(start.getUpTile());
 				return pathSoFar;
 			}
-			findPath(start.getUp(), highestPt, Directions.UP, pathSoFar);
+			findPath(start.getUpTile(), highestPt, Directions.UP, pathSoFar);
 		}
 		
 		return pathSoFar;
+	}
+	
+	public void dispose(){
+		for(Tile[] t : tiles){
+			for(Tile x : t)
+				x.remove();
+		}
 	}
 	
 	// ?? 

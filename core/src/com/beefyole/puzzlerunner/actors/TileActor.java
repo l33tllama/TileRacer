@@ -7,19 +7,19 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.beefyole.puzzlerunner.World;
 import com.beefyole.puzzlerunner.GameConfig;
 import com.beefyole.puzzlerunner.TextureRegionHelper;
 import com.beefyole.puzzlerunner.TilePiece;
 import com.beefyole.puzzlerunner.TilePiece.PieceName;
+import com.beefyole.puzzlerunner.worlds.Tile;
+import com.beefyole.puzzlerunner.worlds.TileWorld;
 
-public class TilePieceActor extends Actor{
+public class TileActor extends Actor{
 	
 	private final int STARTX = 0;
 	private final int STARTY = 0;
 	InputListener inputListener;
 	TextureRegion region;
-	World world;
 	TextureRegionHelper regionHelper;
 	int rows = 9;
 	int cols = 9;
@@ -28,24 +28,22 @@ public class TilePieceActor extends Actor{
 	int draw_width = 81;
 	int draw_height = 81;
 	int regionID;
-	PieceName name;	
-	TilePiece tile;
+	Tile tile;
 	
 	boolean addedToWorld = false;
 	boolean clickedDown = false;
 	GameConfig config;
 					
-	public TilePieceActor(World world, Texture tex, int regionID, int startX, int startY){
-		this.world = world;
+	public TileActor(Tile tile, Texture tex, int regionID, int startX, int startY){
 		this.regionID = regionID;
 		config = new GameConfig();
-
+		this.tile = tile;
 		setBounds(STARTX, STARTY, draw_width, draw_height);
 		regionHelper = new TextureRegionHelper(tex, width, height, rows, cols);
 		region = regionHelper.getRegionAt(regionID);
 		setPosition(startX, startY);
 		//setPosition(world.getPos().x + getX(), world.getPos().y + getY());
-		addListener(new InputListener(){
+		/*addListener(new InputListener(){
 			public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
 				System.out.println("down");
 				//setPosition(- width / 2, - height/2); 
@@ -57,7 +55,15 @@ public class TilePieceActor extends Actor{
 				//clickedDown = false;
 		        //System.out.println("up");
 		    }
-		});
+		});*/
+	}
+	
+	public void enableTouch(){
+		
+	}
+	
+	public void disableTouch(){
+		
 	}
 	
 	@Override 
@@ -67,22 +73,7 @@ public class TilePieceActor extends Actor{
 					Gdx.graphics.getHeight() - Gdx.input.getY() - height / 2);
 		} */
 	}
-	public TilePiece getTile() {
-		return tile;
-	}
-
-	public void setTile(TilePiece tile) {
-		this.tile = tile;
-	}
-	
-	public void setPieceName(PieceName name){
-		this.name = name;
-	}
-	
-	public PieceName getPieceName(){
-		return this.name;
-	}
-	
+		
 	public boolean isClicked(){
 		return clickedDown;
 	}

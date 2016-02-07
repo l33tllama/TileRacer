@@ -1,8 +1,8 @@
-package com.beefyole.puzzlerunner;
+package com.beefyole.puzzlerunner.worlds;
 
 import com.badlogic.gdx.math.Vector2;
 
-public interface World {
+public interface TileWorld {
 	
 	public void generate();
 	

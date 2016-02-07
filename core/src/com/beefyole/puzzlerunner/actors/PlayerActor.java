@@ -7,9 +7,9 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.beefyole.puzzlerunner.World;
+import com.beefyole.puzzlerunner.worlds.TileWorld;
 
-public class Player extends Actor{
+public class PlayerActor extends Actor{
 	
 	private final int STARTX = 0;
 	private final int STARTY = 0;
@@ -18,9 +18,9 @@ public class Player extends Actor{
 	
 	Texture tex;
 	TextureRegion region;
-	World world;
+	TileWorld world;
 	
-	public Player(World world, Vector2 startPos){
+	public PlayerActor(TileWorld world, Vector2 startPos){
 		tex = new Texture(Gdx.files.internal("sprites/robot_3Dblue.png"));
 		width = tex.getWidth();
 		height = tex.getHeight();
