@@ -9,8 +9,8 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.beefyole.puzzlerunner.GameConfig;
 import com.beefyole.puzzlerunner.TextureRegionHelper;
-import com.beefyole.puzzlerunner.TilePiece;
-import com.beefyole.puzzlerunner.TilePiece.PieceName;
+import com.beefyole.puzzlerunner.old.TilePiece;
+import com.beefyole.puzzlerunner.old.TilePiece.PieceName;
 import com.beefyole.puzzlerunner.worlds.Tile;
 import com.beefyole.puzzlerunner.worlds.TileWorld;
 
@@ -21,6 +21,7 @@ public class TileActor extends Actor{
 	InputListener inputListener;
 	TextureRegion region;
 	TextureRegionHelper regionHelper;
+	Texture tex;
 	int rows = 9;
 	int cols = 9;
 	int width = 64;
@@ -38,6 +39,7 @@ public class TileActor extends Actor{
 		this.regionID = regionID;
 		config = new GameConfig();
 		this.tile = tile;
+		this.tex = tex;
 		setBounds(STARTX, STARTY, draw_width, draw_height);
 		regionHelper = new TextureRegionHelper(tex, width, height, rows, cols);
 		region = regionHelper.getRegionAt(regionID);
@@ -56,6 +58,16 @@ public class TileActor extends Actor{
 		        //System.out.println("up");
 		    }
 		});*/
+	}
+	
+	public void postInit(Tile tile, Texture tex, int regionID, int startX, int startY){
+		this.tile = tile;
+		this.tex = tex;
+		this.regionID = regionID;
+		setBounds(0, 0, draw_width, draw_height);
+		setPosition(startX, startY);
+		regionHelper = new TextureRegionHelper(tex, width, height, rows, cols);
+		region = regionHelper.getRegionAt(regionID);
 	}
 	
 	public void enableTouch(){

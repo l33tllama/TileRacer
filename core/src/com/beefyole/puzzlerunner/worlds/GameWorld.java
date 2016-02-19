@@ -4,17 +4,18 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
-import com.beefyole.puzzlerunner.TilePiece;
 import com.beefyole.puzzlerunner.actors.TileActor;
+import com.beefyole.puzzlerunner.old.TilePiece;
 
 public class GameWorld implements TileWorld {
 			
 	private Vector2 pos;
 	private float vel = 1.0f;
 	private static float MAX_VELOCITY = 10f;
-	private float accel = 0.009f;
+	private float accel = 0.002f;
 	private TileGrid tileGrid;	
 	private int width, height;
+	private boolean moving = false;
 	
 	public GameWorld(int x, int y, int width, int height){
 		pos = new Vector2(x, y);
@@ -23,6 +24,17 @@ public class GameWorld implements TileWorld {
 		tileGrid = new TileGrid(width, height);
 	}
 	
+	public TileGrid getTileGrid(){
+		return tileGrid;
+	}
+	
+	public void startMoving(){
+		moving = true;
+	}
+	
+	public void pauseMoving(){
+		moving = false;
+	}
 	
 	@Override
 	public void update(float dt){
@@ -31,8 +43,10 @@ public class GameWorld implements TileWorld {
 		if(vel < MAX_VELOCITY){
 			vel += accel;
 		}
+		if(moving){
+			pos.y -= vel * dt;
+		}
 		
-		//pos.y -= vel * dt;
 		//setY(getY() - vel * dt);
 	}
 

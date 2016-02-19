@@ -5,5 +5,9 @@ public class Player {
 	public Player(){
 		
 	}
+	
+	public void update(float dt){
+		
+	}
 
 }

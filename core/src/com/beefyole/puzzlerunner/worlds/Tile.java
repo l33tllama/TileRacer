@@ -2,25 +2,48 @@ package com.beefyole.puzzlerunner.worlds;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.beefyole.puzzlerunner.old.GameObject2D;
 
-public class Tile extends Actor{
+public class Tile{
 	
 	private boolean has_up, has_down, has_left, has_right;
 	private boolean up_connected, down_connected, left_connected, right_connected;
 	private Tile up_t, down_t, left_t, right_t;
 	private boolean is_empty = false;
-	private int yPos, xPos;
+	private int yIndex, xIndex;
 	private Texture tex;
 	private TextureRegion region;
 	
-	public Tile(boolean has_up, boolean has_down, boolean has_left, boolean has_right, int xPos, int yPos){
+	public Tile(){
+		has_up = has_down = has_left = has_right = false;
+		xIndex = yIndex = 0;
+		up_connected = down_connected = left_connected = right_connected = false;
+		is_empty = true;
+	}
+	
+	public Tile(boolean has_up, boolean has_down, boolean has_left, boolean has_right, int xIndex, int yIndex){
 		this.has_up = has_up;
 		this.has_down = has_down;
 		this.has_left = has_left;
 		this.has_right = has_right;
-		this.xPos = xPos;
-		this.yPos = yPos;
+		this.xIndex = xIndex;
+		this.yIndex = yIndex;
+		up_connected = down_connected = left_connected = right_connected = false;
+		if(!has_up && !has_down && !has_left && !has_right){
+			is_empty = true;
+		}
+	}
+	
+	// post init when used in memory pooling
+	public void postInit(boolean has_up, boolean has_down, boolean has_left, boolean has_right, int xIndex, int yIndex){
+		this.has_up = has_up;
+		this.has_down = has_down;
+		this.has_left = has_left;
+		this.has_right = has_right;
+		this.xIndex = xIndex;
+		this.yIndex = yIndex;
 		up_connected = down_connected = left_connected = right_connected = false;
 		if(!has_up && !has_down && !has_left && !has_right){
 			is_empty = true;
@@ -33,11 +56,11 @@ public class Tile extends Actor{
 	
 	// Get x and y positions
 	public int getGridY(){
-		return yPos;
+		return yIndex;
 	}
 	// might not need this..?
 	public int getGridX(){
-		return xPos;
+		return xIndex;
 	}
 	
 	// check if tile has edge (read only)

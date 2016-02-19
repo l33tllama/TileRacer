@@ -144,7 +144,7 @@ public class TileGrid{
 	public void dispose(){
 		for(Tile[] t : tiles){
 			for(Tile x : t)
-				x.remove();
+				x.dispose();
 		}
 	}
 	

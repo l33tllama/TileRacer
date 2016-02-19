@@ -12,16 +12,19 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.AddAction;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.beefyole.puzzlerunner.GameConfig;
 import com.beefyole.puzzlerunner.TextureRegionHelper;
-import com.beefyole.puzzlerunner.TilePiece;
-import com.beefyole.puzzlerunner.TilePiece.PieceName;
 import com.beefyole.puzzlerunner.actors.PlayerActor;
+import com.beefyole.puzzlerunner.actors.SelectableTilesGroup;
 import com.beefyole.puzzlerunner.actors.TileActor;
 import com.beefyole.puzzlerunner.actors.TileDirector;
-import com.beefyole.puzzlerunner.actors.WorldBackgroundActor;
+import com.beefyole.puzzlerunner.actors.WorldBackgroundGroup;
+import com.beefyole.puzzlerunner.old.TilePiece;
+import com.beefyole.puzzlerunner.old.TilePiece.PieceName;
 import com.beefyole.puzzlerunner.actors.StaticBackgroundTileActor;
 import com.beefyole.puzzlerunner.worlds.GameWorld;
 import com.beefyole.puzzlerunner.worlds.TileGrid;
@@ -29,37 +32,24 @@ import com.beefyole.puzzlerunner.worlds.TileGrid;
 public class GameScene extends Stage {
 	
 	private boolean renderSideBackground = false;
-	//int currentTiles = 5;
-	//int activeTileIndex = 0;
-	//int tileHeight = 0;
-	//int lastMapHeight = 81;
-	//int selectedPieceIndex = 0;
 	private int tileSize = 81;
 	private float centerX;
 	private float leftX;
 	private float viewportWidth;
 	private float viewportHeight;
-	//boolean shownNewPiece = false;
 	private Camera camera;
 	private Viewport viewport;
-	//Array<TilePieceActor> tiles;
-	//Array<TilePieceActor> exitOptionsActs;
 	private Texture roadTilesTex;
 	private TileGrid tileGrid;
-	//TilePieceActor tmp;
-	//TilePieceActor startPieceAct;
-	//TilePieceActor selectedPiece;
 	private ShapeRenderer shapeRenderer;
 	private StaticBackgroundTileActor tmpTile;
 	private PlayerActor player;
 	private GameWorld world;
 	private GameConfig config;
-	private WorldBackgroundActor worldActor;
+	private WorldBackgroundGroup worldActor;
 	private TextureRegionHelper regionHelper;
-	
-	//Array<TilePiece> selectablePieces;
-	//TilePieceActor lastPA;
-	//Array<TilePiece> exitOptions;
+	private TileDirector tileDirector;
+	private SelectableTilesGroup selectableTiles;
 	
 	public GameScene(){
 		System.out.println("Creating game scene..");
@@ -72,10 +62,14 @@ public class GameScene extends Stage {
 		System.out.println("Creating world..");
 		world = new GameWorld(0, 0, 5, 9);
 		
-		worldActor = new WorldBackgroundActor(world, roadTilesTex, null, 5, 9, tileSize);
+		worldActor = new WorldBackgroundGroup(world, roadTilesTex, null, 5, 9, tileSize);
 		addActor(worldActor);
+		selectableTiles = new SelectableTilesGroup(world, roadTilesTex, worldActor.getTileDirector(), tileSize, tileSize);
+		addActor(selectableTiles);
+		
 		System.out.println("Done.");
 		
+		// set screen up depending on OS
 		switch(Gdx.app.getType()){
 		case Desktop:
 			renderSideBackground = true;
@@ -89,18 +83,20 @@ public class GameScene extends Stage {
 		centerX = config.getTallscreenWidth() / 2.0f;
 		
 		camera = new OrthographicCamera(viewportWidth, viewportHeight);
-		viewport = new FitViewport(viewportWidth, viewportHeight);
+		viewport = new FitViewport(viewportWidth, viewportHeight, camera);
+		
+		world.setPos(new Vector2(viewportWidth / 2 - config.getTallscreenWidth() / 2, 0));
+		selectableTiles.setPosition(world.getPos().x, 0);
 		
 		shapeRenderer = new ShapeRenderer();
 		shapeRenderer.setProjectionMatrix(camera.combined);
+		world.startMoving();
 
 	}
 	
-		
 	@Override 
 	public void act(float dt){
-		
-		
+		super.act(dt);
 		world.update(dt);
 		
 		//player.moveBy(0.01f * dt, 20f * dt);
@@ -133,6 +129,7 @@ public class GameScene extends Stage {
 			//	tmp.getY() - (config.getScreenHeight() / 2), tmp.getWidth() + 2, tmp.getHeight() + 2);
 		//shapeRenderer.end();
 	} 
+	
 	@Override 
 	public void dispose(){
 		player.dispose();
