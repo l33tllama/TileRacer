@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.beefyole.puzzlerunner.actors.TileActor;
 import com.beefyole.puzzlerunner.old.GameObject2D;
 
 public class Tile{
@@ -15,6 +16,7 @@ public class Tile{
 	private int yIndex, xIndex;
 	private Texture tex;
 	private TextureRegion region;
+	private TileActor tileActor;
 	
 	public Tile(){
 		has_up = has_down = has_left = has_right = false;
@@ -37,7 +39,7 @@ public class Tile{
 	}
 	
 	// post init when used in memory pooling
-	public void postInit(boolean has_up, boolean has_down, boolean has_left, boolean has_right, int xIndex, int yIndex){
+	public void postInit(TileActor tileActor, boolean has_up, boolean has_down, boolean has_left, boolean has_right, int xIndex, int yIndex){
 		this.has_up = has_up;
 		this.has_down = has_down;
 		this.has_left = has_left;
@@ -48,6 +50,15 @@ public class Tile{
 		if(!has_up && !has_down && !has_left && !has_right){
 			is_empty = true;
 		}
+		this.tileActor = tileActor;
+	}
+	
+	public void setTileActor(TileActor tileActor){
+		this.tileActor = tileActor;
+	}
+	
+	public TileActor getTileActor(){
+		return this.tileActor;
 	}
 	
 	public void createTexture(Texture tex){

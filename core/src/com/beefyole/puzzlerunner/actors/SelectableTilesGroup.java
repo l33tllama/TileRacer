@@ -1,14 +1,19 @@
 package com.beefyole.puzzlerunner.actors;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.beefyole.puzzlerunner.GameConfig;
 import com.beefyole.puzzlerunner.TextureRegionHelper;
 import com.beefyole.puzzlerunner.worlds.GameWorld;
 import com.beefyole.puzzlerunner.worlds.Tile;
-import com.sun.prism.paint.Color;
 
 public class SelectableTilesGroup extends Group {
 	
@@ -21,6 +26,9 @@ public class SelectableTilesGroup extends Group {
 	private int tileWidth, tileHeight;
 	private TextureRegionHelper regionHelper;
 	private GameWorld world;
+	private int selectedIndex;
+	private ShapeRenderer shapeRenderer;
+	private GameConfig config;	
 	
 	//TODO: move tileactorpool elsewhere..
 	
@@ -32,6 +40,8 @@ public class SelectableTilesGroup extends Group {
 		this.world = world;
 		selectableTileActors = new Array<TileActor>(SELECTABLE_TILES);
 		this.regionHelper = new TextureRegionHelper(tex, tileWidth, tileHeight, 5, 9);
+		selectedIndex = 0;
+		shapeRenderer = new ShapeRenderer();
 		tileActorsPool = new Pool<TileActor>(MAX_TILES){
 			@Override
 			protected TileActor newObject(){
@@ -39,6 +49,7 @@ public class SelectableTilesGroup extends Group {
 			}
 		};
 		addSelectableTiles();
+		tileDirector.connectSelectableTiles(this);
 		
 	}
 	
@@ -56,12 +67,33 @@ public class SelectableTilesGroup extends Group {
 			addActor(tmp);
 		}
 	}
-	/*
+	
+	public TileActor getSelectedTile(){
+		return selectableTileActors.get(selectedIndex);
+	}
+	
 	@Override
 	public void act(float dt){
-		for(int i = 0; i < MAX_TILES; i++){
-			TileActor t = selectableTileActors.get(i);
-			t.setPosition(i * tileWidth, 0);
+		if(Gdx.input.isKeyJustPressed(Keys.LEFT)){
+			selectedIndex = selectedIndex == 0 ? 4 : selectedIndex - 1;
 		}
-	}*/
+		if(Gdx.input.isKeyJustPressed(Keys.RIGHT)){
+			selectedIndex = selectedIndex == 4 ? 0 : selectedIndex + 1;
+		}
+		// move to next tile (tab not work in HTML5..)
+		if(Gdx.input.isKeyJustPressed(Keys.TAB)){
+			
+		}
+		if(Gdx.input.isKeyJustPressed(Keys.ENTER)){
+			
+		}
+	}
+	@Override 
+	public void draw(Batch batch, float parentAlpha){
+		super.draw(batch, parentAlpha);
+		shapeRenderer.begin(ShapeType.Line);
+		shapeRenderer.setColor(Color.RED);		
+		shapeRenderer.rect(world.getPos().x + selectedIndex * tileWidth, 0, tileWidth, tileHeight);
+		shapeRenderer.end();
+	}
 }

@@ -35,7 +35,7 @@ public class WorldBackgroundGroup extends Group{
 			for(int y = 0; y < rows; y++){
 				System.out.println("Adding a tile at " + x + ", " + y + ".");
 				//TODO: get regionHelper from here..?
-				TileActor tmpTA = new TileActor(null, tex, (int)Math.floor(Math.random()* 33), x * tileSize, y * tileSize);
+				TileActor tmpTA = new TileActor(null, tex, GRASS_REGION, x * tileSize, y * tileSize);
 				addActor(tmpTA);
 			}
 		}

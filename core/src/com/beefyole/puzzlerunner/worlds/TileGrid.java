@@ -29,8 +29,9 @@ public class TileGrid{
 		}
 	}
 	
-	public void createFirstTile(){
-		this.startTile = new Tile(true, false, false, false, 2, 0);
+	public void createFirstTile(Tile st){
+		this.startTile = st;
+		tiles[st.getGridX()][st.getGridY()] = st;
 	}
 	
 	public void insertTleleAt(Tile t, int x, int y){

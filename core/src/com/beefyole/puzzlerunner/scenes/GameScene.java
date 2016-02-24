@@ -3,28 +3,19 @@ package com.beefyole.puzzlerunner.scenes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.actions.AddAction;
-import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.beefyole.puzzlerunner.GameConfig;
 import com.beefyole.puzzlerunner.TextureRegionHelper;
 import com.beefyole.puzzlerunner.actors.PlayerActor;
 import com.beefyole.puzzlerunner.actors.SelectableTilesGroup;
-import com.beefyole.puzzlerunner.actors.TileActor;
 import com.beefyole.puzzlerunner.actors.TileDirector;
 import com.beefyole.puzzlerunner.actors.WorldBackgroundGroup;
-import com.beefyole.puzzlerunner.old.TilePiece;
-import com.beefyole.puzzlerunner.old.TilePiece.PieceName;
 import com.beefyole.puzzlerunner.actors.StaticBackgroundTileActor;
 import com.beefyole.puzzlerunner.worlds.GameWorld;
 import com.beefyole.puzzlerunner.worlds.TileGrid;
@@ -48,7 +39,6 @@ public class GameScene extends Stage {
 	private GameConfig config;
 	private WorldBackgroundGroup worldActor;
 	private TextureRegionHelper regionHelper;
-	private TileDirector tileDirector;
 	private SelectableTilesGroup selectableTiles;
 	
 	public GameScene(){
@@ -62,9 +52,11 @@ public class GameScene extends Stage {
 		System.out.println("Creating world..");
 		world = new GameWorld(0, 0, 5, 9);
 		
+		
 		worldActor = new WorldBackgroundGroup(world, roadTilesTex, null, 5, 9, tileSize);
-		addActor(worldActor);
 		selectableTiles = new SelectableTilesGroup(world, roadTilesTex, worldActor.getTileDirector(), tileSize, tileSize);
+		
+		addActor(worldActor);
 		addActor(selectableTiles);
 		
 		System.out.println("Done.");
@@ -102,32 +94,18 @@ public class GameScene extends Stage {
 		//player.moveBy(0.01f * dt, 20f * dt);
 		
 		// select tiles when keys pressed
-		if(Gdx.input.isKeyJustPressed(Keys.LEFT)){
-		}
-		if(Gdx.input.isKeyJustPressed(Keys.RIGHT)){
-		}
+		
 		if(Gdx.input.isKeyJustPressed(Keys.ESCAPE)){
 			System.out.println("Goodbye");
 			Gdx.app.exit();
 		}
 		
-		// move to next tile (tab not work in HTML5..)
-		if(Gdx.input.isKeyJustPressed(Keys.TAB)){
-			
-		}
-		if(Gdx.input.isKeyJustPressed(Keys.ENTER)){
-			
-		}
+		
 	}
 	
 	@Override 
 	public void draw(){	
 		super.draw();
-		//shapeRenderer.begin(ShapeType.Line);
-		//shapeRenderer.setColor(Color.RED);		
-		//shapeRenderer.rect(tmp.getX() - (config.getScreenWidth() / 2), 
-			//	tmp.getY() - (config.getScreenHeight() / 2), tmp.getWidth() + 2, tmp.getHeight() + 2);
-		//shapeRenderer.end();
 	} 
 	
 	@Override 

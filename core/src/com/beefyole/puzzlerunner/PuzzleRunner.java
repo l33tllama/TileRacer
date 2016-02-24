@@ -19,7 +19,7 @@ public class PuzzleRunner extends ApplicationAdapter {
 		//batch = new SpriteBatch();
 		//img = new Texture("badlogic.jpg");
 		config = new GameConfig();
-		config.setTallscreenResolution(405, 720);
+		config.setTallscreenResolution(480, 800);
 		config.setWidescreenResolution(1280, 720);
 		currentStage = new GameScene();
 		Gdx.input.setInputProcessor(currentStage);
