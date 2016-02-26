@@ -36,12 +36,11 @@ public class TileDirector extends Group{
 	private final int REGION_GRASS = 33;
 	private final int MAX_TILES = 100;
 	private final int SELECTABLE_TILES = 5;
-	private int selectedIndex;
+	private int sel_new_tile_i;
 	private TileGrid tileGrid;
 	private int tileWidth, tileHeight;
 	private SelectableTilesGroup selectableTilesGroup;
 	private TileActor tmpTAToAdd;
-	
 	
 	public TileDirector(final Texture tex, GameWorld world, int tileWidth, int tileHeight){
 		this.tex = tex;
@@ -50,7 +49,8 @@ public class TileDirector extends Group{
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 		tileActors = new Array<TileActor>(MAX_TILES);
-		selectableTileActors = new Array<TileActor>(SELECTABLE_TILES);		
+		selectableTileActors = new Array<TileActor>(SELECTABLE_TILES);	
+		sel_new_tile_i = 0;
 		
 		// TODO: initialise tiles in separate function (not constructor - see link above)
 		tileActorsPool = new Pool<TileActor>(MAX_TILES){
@@ -80,7 +80,7 @@ public class TileDirector extends Group{
 	public void connectSelectableTiles(SelectableTilesGroup g){
 		selectableTilesGroup = g;
 	}
-	
+	/*
 	void addSelectableTiles(){
 		for(int i = 0; i < 5; i++){
 			TileActor tmp = tileActorsPool.obtain();
@@ -95,48 +95,104 @@ public class TileDirector extends Group{
 			selectableTileActors.add(tmp);
 			addActor(tmp);
 		}
+	} */
+	
+	void updateTilePositions(){
+		// update all tile positions
+		for (TileActor t : tileActors){
+			t.setPosition(t.tile.getGridX() * tileWidth, t.tile.getGridY() * tileHeight);
+		}
 	}
 	
 	@Override
 	public void act(float dt){
-		for (TileActor t : tileActors){
-			t.setPosition(t.tile.getGridX() * tileWidth, t.tile.getGridY() * tileHeight);
-		}
+		
+		updateTilePositions();
+		
+		// get the current tile selected from the selectable tiles group
 		TileActor sel_ta = selectableTilesGroup.getSelectedTile();
 		Tile sel_t = sel_ta.tile;
-		TileGrid tG = world.getTileGrid();
+		
+		// booleans used to determine whether a tile can connect in which direction
 		boolean canConnectUp, canConnectDown, canConnectLeft, canConnectRight;
-		canConnectDown = canConnectLeft = canConnectRight = canConnectUp = false;		
+		canConnectDown = canConnectLeft = canConnectRight = canConnectUp = false;
+		
+		// booleans used for getting the sprite region
+		boolean up = sel_t.canConnectUp();
+		boolean down = sel_t.canConnectDown();
+		boolean left = sel_t.canConnectLeft();
+		boolean right = sel_t.canConnectRight();
+		
+		// white
+		Color thisColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+		
+		// Find all unconnected tiles and add them to an array
 		Tile lastConnectableTile = new Tile();
-		// Find all unconnected tiles
+		Array<Tile> connectableTiles = new Array<Tile>();
+		TileGrid tG = world.getTileGrid();
 		for(Tile ut : tG.findUnconnectedTiles()){
-			Color thisColor = ut.getTileActor().getColor();
-			thisColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 			
 			// Look at all the open directions for each tile and see if the selected tile can connect (opposite side also open)
 			for(Directions d : tG.getOpenDirections(ut)){
-				// if the 
+				int pieceDX = 0;
+				int pieceDY = 0;
+				
+				// if the tile has an opening on the top, and the selected tile has an opening on the bottom (etc)
 				if(d == Directions.UP && sel_t.canConnectDown()){
-					canConnectUp = true;
-					lastConnectableTile = ut;
-				}
-				else if(d == Directions.DOWN && sel_t.canConnectUp()){
-					canConnectDown = true;
-					lastConnectableTile = ut;
+					connectableTiles.add(ut);
+				} else if(d == Directions.DOWN && sel_t.canConnectUp()){
+					connectableTiles.add(ut);
+				} else if(d == Directions.LEFT && sel_t.canConnectRight()){
+					connectableTiles.add(ut);
+				} else if(d == Directions.RIGHT && sel_t.canConnectLeft()){
+					connectableTiles.add(ut);
 				}
 			}
+		}
+		
+		// iterate all possible tile options when tab key is pressed
+		if(Gdx.input.isKeyJustPressed(Keys.TAB)){
+			sel_new_tile_i = sel_new_tile_i == connectableTiles.size - 1 ? 0 : sel_new_tile_i + 1; 
+		}
+		
+		// if there are any tiles to connect to..
+		if(connectableTiles.size > 0){
 			
-			// if it can connect, create e new tile to show at the position where it can go
-			if(canConnectUp){
+			// Get the tile on the grid to connect to at the selected index
+			Tile sel_grid_t = connectableTiles.get(sel_new_tile_i);
+			
+			// if the selected tile on the grid can connect down, and the selected tile in the bottom box can connect up (and etc)
+			if(sel_grid_t.canConnectDown() && sel_t.canConnectUp()){
+				canConnectDown = true;
+			} else if(sel_grid_t.canConnectUp() && sel_t.canConnectDown()){
+				canConnectUp = true;
+			} else if(sel_grid_t.canConnectLeft() && sel_t.canConnectRight()){
+				canConnectLeft = true;
+			} else if(sel_grid_t.canConnectRight() && sel_t.canConnectLeft()){
+				canConnectRight = true;
+			}
+						
+			int pieceDX = 0;
+			int pieceDY = 0;
+			// if there are any connections, prepare new tile to show on screen (add alpha, set region)
+			if(canConnectUp || canConnectRight || canConnectLeft || canConnectDown){
 				thisColor.a = 0.5f;
-				boolean up = sel_t.canConnectUp();
-				boolean down = sel_t.canConnectDown();
-				boolean left = sel_t.canConnectLeft();
-				boolean right = sel_t.canConnectRight();
 				tmpTAToAdd.setRegion(Tile.getTileIndex(up, down, left, right));
-				tmpTAToAdd.setX(lastConnectableTile.getGridX() * tileWidth);
-				tmpTAToAdd.setY((lastConnectableTile.getGridY() + 1) * tileHeight);
 				tmpTAToAdd.setColor(thisColor);
+				
+				// if it can connect, create a new tile to show at the position where it can go
+				if(canConnectUp){
+					pieceDY = 1;
+				} else if (canConnectLeft){
+					pieceDX = -1;
+				} else if (canConnectRight){
+					pieceDX = 1;
+				} else if (canConnectDown){
+					pieceDY = -1;
+				}
+				System.out.println("Can connect");
+				tmpTAToAdd.setX((sel_grid_t.getGridX() + pieceDX) * tileWidth);
+				tmpTAToAdd.setY((sel_grid_t.getGridY() + pieceDY) * tileHeight);
 			} else {
 				thisColor.a = 1.0f;
 				tmpTAToAdd.setX(-tileWidth);
@@ -144,6 +200,31 @@ public class TileDirector extends Group{
 				tmpTAToAdd.setColor(thisColor);
 			}
 		}
+		
+		
+		// When player presses enter, add the tile to the grid	
+		if(Gdx.input.isKeyJustPressed(Keys.ENTER)){
+			if(canConnectDown || canConnectLeft || canConnectRight || canConnectUp){
+				TileActor newPieceActor = tileActorsPool.obtain();
+				int newGridX = sel_t.getGridX();
+				int newGridY = sel_t.getGridY();
+				if(canConnectDown){
+					newGridY += 1;
+					//newPieceActor.postInit(tile, tex, regionID, startX, startY);
+				} else if (canConnectUp){
+					
+				} else if (canConnectLeft){
+					
+				} else if (canConnectRight){
+					
+				}
+				
+				
+			}
+			
+			
+		}
+		
 	}
 	
 	@Override

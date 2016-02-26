@@ -80,13 +80,6 @@ public class SelectableTilesGroup extends Group {
 		if(Gdx.input.isKeyJustPressed(Keys.RIGHT)){
 			selectedIndex = selectedIndex == 4 ? 0 : selectedIndex + 1;
 		}
-		// move to next tile (tab not work in HTML5..)
-		if(Gdx.input.isKeyJustPressed(Keys.TAB)){
-			
-		}
-		if(Gdx.input.isKeyJustPressed(Keys.ENTER)){
-			
-		}
 	}
 	@Override 
 	public void draw(Batch batch, float parentAlpha){
