@@ -98,6 +98,10 @@ public class TileActor extends Actor{
 		return regionID;
 	}
 	
+	public void setRegion(int regionID){
+		this.region = regionHelper.getRegionAt(regionID);
+	}
+	
 	@Override
 	public void draw(Batch batch, float parentAlpha){
 		Color color = getColor();

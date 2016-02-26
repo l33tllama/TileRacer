@@ -17,6 +17,8 @@ import com.beefyole.puzzlerunner.worlds.Tile;
 import com.beefyole.puzzlerunner.worlds.TileGrid;
 import com.beefyole.puzzlerunner.worlds.TileGrid.Directions;
 
+import sun.reflect.LangReflectAccess;
+
 /*
  * TileDirector
  * 
@@ -31,12 +33,14 @@ public class TileDirector extends Group{
 	private Pool<TileActor> tileActorsPool;
 	private Array<TileActor> tileActors; 
 	private Array<TileActor> selectableTileActors;
+	private final int REGION_GRASS = 33;
 	private final int MAX_TILES = 100;
 	private final int SELECTABLE_TILES = 5;
 	private int selectedIndex;
 	private TileGrid tileGrid;
 	private int tileWidth, tileHeight;
 	private SelectableTilesGroup selectableTilesGroup;
+	private TileActor tmpTAToAdd;
 	
 	
 	public TileDirector(final Texture tex, GameWorld world, int tileWidth, int tileHeight){
@@ -56,6 +60,7 @@ public class TileDirector extends Group{
 			}
 		};
 		
+		// create first tile (clean this up?)
 		TileActor ftA = tileActorsPool.obtain();
 		Tile startTile = new Tile(true, false, false, false, 2, 1);
 		ftA.postInit(startTile, tex, Tile.getTileIndex(true, false, false, false), 0, 0);
@@ -64,6 +69,11 @@ public class TileDirector extends Group{
 		tileActors.add(ftA);
 		
 		addActor(ftA);
+		
+		// create temporary tile that could be added and draw off-screen
+		tmpTAToAdd = tileActorsPool.obtain();
+		tmpTAToAdd.postInit(new Tile(), tex, REGION_GRASS, -tileWidth, -tileHeight);
+		addActor(tmpTAToAdd);
 		
 	}
 	
@@ -92,37 +102,48 @@ public class TileDirector extends Group{
 		for (TileActor t : tileActors){
 			t.setPosition(t.tile.getGridX() * tileWidth, t.tile.getGridY() * tileHeight);
 		}
-		TileActor ta = selectableTilesGroup.getSelectedTile();
-		Tile t = ta.tile;
+		TileActor sel_ta = selectableTilesGroup.getSelectedTile();
+		Tile sel_t = sel_ta.tile;
 		TileGrid tG = world.getTileGrid();
-		boolean canConnect = false;
-		
+		boolean canConnectUp, canConnectDown, canConnectLeft, canConnectRight;
+		canConnectDown = canConnectLeft = canConnectRight = canConnectUp = false;		
+		Tile lastConnectableTile = new Tile();
+		// Find all unconnected tiles
 		for(Tile ut : tG.findUnconnectedTiles()){
 			Color thisColor = ut.getTileActor().getColor();
+			thisColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 			
+			// Look at all the open directions for each tile and see if the selected tile can connect (opposite side also open)
 			for(Directions d : tG.getOpenDirections(ut)){
-				if(d == Directions.UP && t.canConnectDown()){
-					System.out.println("Tile can connect up!");
-					canConnect = true;
+				// if the 
+				if(d == Directions.UP && sel_t.canConnectDown()){
+					canConnectUp = true;
+					lastConnectableTile = ut;
 				}
-				else if(d == Directions.DOWN && t.canConnectUp()){
-					System.out.println("Tile can connect down!");
-					canConnect = true;
+				else if(d == Directions.DOWN && sel_t.canConnectUp()){
+					canConnectDown = true;
+					lastConnectableTile = ut;
 				}
 			}
 			
-			if(canConnect && t.canConnectDown()){
+			// if it can connect, create e new tile to show at the position where it can go
+			if(canConnectUp){
 				thisColor.a = 0.5f;
-				ut.getTileActor().setColor(thisColor);
+				boolean up = sel_t.canConnectUp();
+				boolean down = sel_t.canConnectDown();
+				boolean left = sel_t.canConnectLeft();
+				boolean right = sel_t.canConnectRight();
+				tmpTAToAdd.setRegion(Tile.getTileIndex(up, down, left, right));
+				tmpTAToAdd.setX(lastConnectableTile.getGridX() * tileWidth);
+				tmpTAToAdd.setY((lastConnectableTile.getGridY() + 1) * tileHeight);
+				tmpTAToAdd.setColor(thisColor);
 			} else {
 				thisColor.a = 1.0f;
-				ut.getTileActor().setColor(thisColor);
+				tmpTAToAdd.setX(-tileWidth);
+				tmpTAToAdd.setY(-tileHeight);
+				tmpTAToAdd.setColor(thisColor);
 			}
-			
 		}
-		
-		
-		
 	}
 	
 	@Override

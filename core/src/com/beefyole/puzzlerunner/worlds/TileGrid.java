@@ -1,6 +1,5 @@
 package com.beefyole.puzzlerunner.worlds;
 
-import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.utils.Array;
 
 public class TileGrid{
